@@ -74,7 +74,7 @@ flips <- sample(c("T", "H"), 10, replace = T)
 
 ### Exercise 2
 
-Verify the following claim[^https://statmodeling.stat.columbia.edu/2016/02/18/miller-and-sanjurjo-share-5-tips-on-how-to-hit-the-zeitgeist-jackpot/]:
+Verify the following claim^[https://statmodeling.stat.columbia.edu/2016/02/18/miller-and-sanjurjo-share-5-tips-on-how-to-hit-the-zeitgeist-jackpot/]:
 
 > Imagine Steph Curry shows up to the original hot hand study of Gilovich, Vallone, and Tversky (1985). Steph will shoot 100 shots. Suppose Steph Curry always has the same probability of success, for example, like a 50/50 fair coin. Notice we are assuming Steph Curry doesn’t get hot. Now calculate (1) Curry’s field goal percentage on shots taken when his previous 3 shots (or more) are makes and (2) Curry’s field goal percentage on shots taken when his previous 3 shots (or more) are misses. What do expect? If you are like most people, your intuition tells you that you should expect his field goal percentage to be the same in each case. This intuition is incorrect. In fact, you should expect Curry’s field goal percentage to be 46 percent after 3 (or more) makes, and 54 percent after 3 (or more) misses. Steph Curry is expected to shoot 8 percentage points better after 3 misses in a row than after three makes in row. 
 
@@ -85,7 +85,7 @@ Verify the following claim[^https://statmodeling.stat.columbia.edu/2016/02/18/mi
 
 ### Exercise 3
 
-Use a simulation to replicate Figure 1 from the Econometrica paper[^https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2627354].
+Use a simulation to replicate Figure 1 from the Econometrica paper^[https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2627354].
 
 ```{r}
 
