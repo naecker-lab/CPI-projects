@@ -1,0 +1,88 @@
+---
+title: "Hot Hand Assignment"
+author: "Jeffrey Naecker"
+date: "2/11/2019"
+output: html_document
+---
+
+## Basic example
+
+From Gelman blog post
+
+flip the coin 4 times
+
+```{r}
+flips <- sample(c("T", "H"), 4, replace = T)
+```
+
+what faction of flips immediatly following heads were also heads?
+
+```{r}
+mean(flips[which(flips == "H") + 1] == "H", na.rm = T)
+```
+
+lets repeat this a bunch of times
+
+```{r}
+reps <- 1e4
+probs <- rep(NA, reps)
+
+for (i in c(1:reps)) {
+  flips <- sample(c("T", "H"), 4, replace = T)
+  probs[i] <- mean(flips[which(flips == "H") + 1] == "H", na.rm = T)
+}
+
+# calculate average probability
+mean(probs, na.rm = T) # there will be some NAs because some sets of 4 flips will have no heads
+```
+
+The answer you get should be around 0.4, not 0.5 as we might expect.
+
+## Exercises
+
+### Exercise 1
+
+Veryify the following claim^[https://statmodeling.stat.columbia.edu/2015/07/09/hey-guess-what-there-really-is-a-hot-hand/]:
+
+> With sequences of length 10, the average streakiness statistic (that is, for each person you compute the conditional probability proportion that he gets heads, conditional on him having just got heads on the previous flip, and then you average this across people), is .445. This is pretty far from .5, given that previous estimates of streak-shooting probability have been in the range of 2 percentage points.
+
+10 flips:
+
+```{r}
+flips <- sample(c("T", "H"), 10, replace = T)
+```
+
+detecting streaks programatically is a little harder now
+
+**TODO**
+
+need a function to count streaks
+given a sequence of H and T, should return a sequence of same length
+where each entry counts the number of immediately preceding H's in a row
+eg if sequence is HTHHTH, return 0,0,0,1,2,0
+
+```{r}
+streaks <- function(flips){
+    # TBD
+  }
+```
+
+### Exercise 2
+
+Verify the following claim[^https://statmodeling.stat.columbia.edu/2016/02/18/miller-and-sanjurjo-share-5-tips-on-how-to-hit-the-zeitgeist-jackpot/]:
+
+> Imagine Steph Curry shows up to the original hot hand study of Gilovich, Vallone, and Tversky (1985). Steph will shoot 100 shots. Suppose Steph Curry always has the same probability of success, for example, like a 50/50 fair coin. Notice we are assuming Steph Curry doesn’t get hot. Now calculate (1) Curry’s field goal percentage on shots taken when his previous 3 shots (or more) are makes and (2) Curry’s field goal percentage on shots taken when his previous 3 shots (or more) are misses. What do expect? If you are like most people, your intuition tells you that you should expect his field goal percentage to be the same in each case. This intuition is incorrect. In fact, you should expect Curry’s field goal percentage to be 46 percent after 3 (or more) makes, and 54 percent after 3 (or more) misses. Steph Curry is expected to shoot 8 percentage points better after 3 misses in a row than after three makes in row. 
+
+
+```{r}
+
+```
+
+### Exercise 3
+
+Use a simulation to replicate Figure 1 from the Econometrica paper[^https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2627354].
+
+```{r}
+
+```
+

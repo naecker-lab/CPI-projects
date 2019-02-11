@@ -1,0 +1,25 @@
+---
+title: "Hot Hand Writeup"
+author: "Jeffrey Naecker"
+date: "2/11/2019"
+output: html_document
+---
+
+## Refernces
+
+### Entry-level
+
+- https://theconversation.com/momentum-isnt-magic-vindicating-the-hot-hand-with-the-mathematics-of-streaks-74786
+
+### More technical
+
+- https://statmodeling.stat.columbia.edu/2014/08/12/understanding-hot-hand-myth-hot-hand-time/
+- https://statmodeling.stat.columbia.edu/2015/07/09/hey-guess-what-there-really-is-a-hot-hand/
+- https://statmodeling.stat.columbia.edu/2016/02/18/miller-and-sanjurjo-share-5-tips-on-how-to-hit-the-zeitgeist-jackpot/
+
+### Source papers
+
+- https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2627354
+- https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2450479
+- https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2611987
+- https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3032826
