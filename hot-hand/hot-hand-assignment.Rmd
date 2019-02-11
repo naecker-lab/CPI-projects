@@ -38,6 +38,24 @@ mean(probs, na.rm = T) # there will be some NAs because some sets of 4 flips wil
 
 The answer you get should be around 0.4, not 0.5 as we might expect.
 
+detecting streaks programatically is a little harder now
+
+**TODO**
+
+need a function to count streaks
+given a sequence of H and T, should return a sequence of same length
+where each entry counts the number of immediately preceding H's in a row
+eg if sequence is HTHHHH, return 0,1,0,1,2,3
+also add ability to calculate streaks of tails
+HTHHHH becomes 0, 0, 1, 0, 0, 0
+
+```{r}
+streaks <- function(flips, count = "H"){
+    # TBD
+  }
+```
+
+
 ## Exercises
 
 ### Exercise 1
@@ -52,20 +70,7 @@ Veryify the following claim^[https://statmodeling.stat.columbia.edu/2015/07/09/h
 flips <- sample(c("T", "H"), 10, replace = T)
 ```
 
-detecting streaks programatically is a little harder now
 
-**TODO**
-
-need a function to count streaks
-given a sequence of H and T, should return a sequence of same length
-where each entry counts the number of immediately preceding H's in a row
-eg if sequence is HTHHTH, return 0,0,0,1,2,0
-
-```{r}
-streaks <- function(flips){
-    # TBD
-  }
-```
 
 ### Exercise 2
 
