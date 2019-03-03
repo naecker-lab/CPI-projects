@@ -48,11 +48,34 @@ where each entry counts the number of immediately preceding H's in a row
 eg if sequence is HTHHHH, return 0,1,0,1,2,3
 also add ability to calculate streaks of tails
 HTHHHH becomes 0, 0, 1, 0, 0, 0
+```{r}
+flips <- sample(c("T", "H"), 4, replace = T)
+flips[3]
+
+```
 
 ```{r}
-streaks <- function(flips, count = "H"){
-    # TBD
+flips <- sample(c("T", "H"), 15, replace = T)
+flips[3]
+
+#rle(flips)
+
+streaks <- function(flips, count="H"){
+  counts=rep(NA, length(flips))
+  counts[1]=0
+  counts[2]=ifelse(flips[1]==count, 1,0)
+  for(i in 3:length(flips)){
+    if (flips[i-1]==count){  
+     counts[i]=1+counts[i-1]
   }
+  else {
+    counts[i]=0}
+
+  }
+   return(counts)
+}
+ 
+
 ```
 
 
@@ -67,7 +90,16 @@ Veryify the following claim^[https://statmodeling.stat.columbia.edu/2015/07/09/h
 10 flips:
 
 ```{r}
-flips <- sample(c("T", "H"), 10, replace = T)
+#flips <- sample(c("T", "H"), 10, replace = T)
+reps <- 1e4
+probs <- rep(NA, reps)
+
+for (i in c(1:reps)) {
+  flips <- sample(c("T", "H"), 10, replace = T)
+  probs[i] <- mean(flips[which(flips == "H") + 1] == "H", na.rm = T)
+}
+
+mean(probs, na.rm = T)
 ```
 
 
@@ -78,16 +110,168 @@ Verify the following claim[^https://statmodeling.stat.columbia.edu/2016/02/18/mi
 
 > Imagine Steph Curry shows up to the original hot hand study of Gilovich, Vallone, and Tversky (1985). Steph will shoot 100 shots. Suppose Steph Curry always has the same probability of success, for example, like a 50/50 fair coin. Notice we are assuming Steph Curry doesn’t get hot. Now calculate (1) Curry’s field goal percentage on shots taken when his previous 3 shots (or more) are makes and (2) Curry’s field goal percentage on shots taken when his previous 3 shots (or more) are misses. What do expect? If you are like most people, your intuition tells you that you should expect his field goal percentage to be the same in each case. This intuition is incorrect. In fact, you should expect Curry’s field goal percentage to be 46 percent after 3 (or more) makes, and 54 percent after 3 (or more) misses. Steph Curry is expected to shoot 8 percentage points better after 3 misses in a row than after three makes in row. 
 
-
 ```{r}
+streaks <- function(flips, count="H"){
+  counts=rep(NA, length(flips))
+  counts[1]=0
+  counts[2]=ifelse(flips[1]==count, 1,0)
+  for(i in 3:length(flips)){
+    if (flips[i-1]==count){  
+     counts[i]=1+counts[i-1]
+  }
+  else {
+    counts[i]=0}
 
+  }
+   return(counts)
+}
+
+
+reps<-1e4
+probs <- rep(NA, reps)
+
+for (i in c(1:reps)) {
+  steph <- sample(c("M", "H"), 100, replace = T)
+  probs[i] <- mean(steph[which(streaks(steph, count="H")>=3)] == "H")
+}
+
+
+mean(probs, na.rm = T)
+
+for (i in c(1:reps)) {
+  steph <- sample(c("M", "H"), 100, replace = T)
+  probs[i] <- mean(steph[which(streaks(steph, count="M")>=3)] == "H")
+}
+
+mean(probs, na.rm = T)
 ```
+
+
+
 
 ### Exercise 3
 
 Use a simulation to replicate Figure 1 from the Econometrica paper[^https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2627354].
 
 ```{r}
+##will have to change lines to adjust for sequence lengths and probabilities
+##takes in probability of getting head(p), streak length(k), and number of shots(n)
+#expand.grid
+#calculate % of shots they make after streak of that length
+#function
+#expand.grid(c(1:100), c("a","b"))
+
+
+streaks <- function(flips, count="H"){
+  counts=rep(NA, length(flips))
+  counts[1]=0
+  counts[2]=ifelse(flips[1]==count, 1,0)
+  for(i in 3:length(flips)){
+    if (flips[i-1]==count){  
+     counts[i]=1+counts[i-1]
+  }
+  else {
+    counts[i]=0}
+
+  }
+   return(counts)
+}
+
+
+graph<-function(k,n,p){
+  reps<-1e4
+  probs <- rep(NA, reps)
+  if (p==.5){
+    if (k==1){
+      for (i in c(1:reps)) {
+        steph <- sample(c("M", "H"), n, replace = T)
+        probs[i] <- mean(steph[which(streaks(steph, count="H")>=1)] == "H")
+    }
+  
+      mean(probs, na.rm=T)
+    }
+    else if (k==2){
+      for (i in c(1:reps)) {
+    steph <- sample(c("M", "H"), n, replace = T)
+    probs[i] <- mean(steph[which(streaks(steph, count="H")>=2)] == "H")
+      }
+      mean(probs, na.rm=T)
+      }
+    else if (k==3){
+       for (i in c(1:reps)) {
+        steph <- sample(c("M", "H"), n, replace = T)
+        probs[i] <- mean(steph[which(streaks(steph, count="H")>=3)] == "H") 
+       }
+      mean(probs, na.rm=T)
+      }
+    else {
+      for (i in c(1:reps)) {
+        steph <- sample(c("M", "H"), n, replace = T)
+        probs[i] <- mean(steph[which(streaks(steph, count="H")>=4)] == "H")
+      }
+     mean(probs, na.rm=T)}
+  }
+  else if (p==.75){
+    if (k==1){
+      for (i in c(1:reps)) {
+        steph <- sample(c("M", "H","H","H"), n, replace = T)
+        probs[i] <- mean(steph[which(streaks(steph, count="H")>=1)] == "H")
+    }
+  
+      mean(probs, na.rm=T)
+    }
+    else if (k==2){
+      for (i in c(1:reps)) {
+    steph <- sample(c("M", "H","H","H"), n, replace = T)
+    probs[i] <- mean(steph[which(streaks(steph, count="H")>=2)] == "H")
+      }
+      mean(probs, na.rm=T)
+      }
+    else if (k==3){
+       for (i in c(1:reps)) {
+        steph <- sample(c("M", "H","H","H"), n, replace = T)
+        probs[i] <- mean(steph[which(streaks(steph, count="H")>=3)] == "H") 
+       }
+      mean(probs, na.rm=T)
+      }
+    else {
+      for (i in c(1:reps)) {
+        steph <- sample(c("M", "H","H","H"), n, replace = T)
+        probs[i] <- mean(steph[which(streaks(steph, count="H")>=4)] == "H")
+      }
+     mean(probs, na.rm=T)}
+  }
+  else{
+    if (k==1){
+      for (i in c(1:reps)) {
+        steph <- sample(c("M", "M","M","H"), n, replace = T)
+        probs[i] <- mean(steph[which(streaks(steph, count="H")>=1)] == "H")
+    }
+  
+      mean(probs, na.rm=T)
+    }
+    else if (k==2){
+      for (i in c(1:reps)) {
+    steph <- sample(c("M", "M","M","H"), n, replace = T)
+    probs[i] <- mean(steph[which(streaks(steph, count="H")>=2)] == "H")
+      }
+      mean(probs, na.rm=T)
+      }
+    else if (k==3){
+       for (i in c(1:reps)) {
+        steph <- sample(c("M", "M","M","H"), n, replace = T)
+        probs[i] <- mean(steph[which(streaks(steph, count="H")>=3)] == "H") 
+       }
+      mean(probs, na.rm=T)
+      }
+    else {
+      for (i in c(1:reps)) {
+        steph <- sample(c("M", "M","M","H"), n, replace = T)
+        probs[i] <- mean(steph[which(streaks(steph, count="H")>=4)] == "H")
+      }
+     mean(probs, na.rm=T)}
+  }
+}
 
 ```
 
