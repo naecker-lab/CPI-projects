@@ -122,9 +122,20 @@ Armed with this function, you should now be able to modify your answer to the pr
 
 ```{r exercise-2-answer}
 # field goal percentage after three or more makes in a row
+for (i in c(1:reps)) {
+  flips <- sample(c("T", "H"), 100, replace = T)
+  probs[i] <- mean(flips[which(streaks(flips) >= 3)] == "H", na.rm = T) 
+}
+
+mean(probs, na.rm = T)
 
 # field goal percentage after three or more misses in a row
+for (i in c(1:reps)) {
+  flips <- sample(c("T", "H"), 100, replace = T)
+  probs[i] <- mean(flips[which(streaks(flips, count = "T") >= 3)] == "H", na.rm = T) 
+}
 
+mean(probs, na.rm = T)
 ```
 
 ### Exercise 3
@@ -139,7 +150,7 @@ Use a simulation to replicate Figure 1 from the Econometrica paper[^https://pape
 #function
 #expand.grid(c(1:100), c("a","b"))
 
-graph<-function(k,n,p){
+calculate_frequency <-function(k,n,p){
   reps<-1e4
   probs <- rep(NA, reps)
   if (p==.5){
@@ -234,5 +245,13 @@ graph<-function(k,n,p){
   }
 }
 
+expand.grid(k = c(1, 2, 3, 4), n = c(5:100), p = c(0.25, 0.5, 0.75))
+# add frequency column using calculate_frequency function
+
+# make graph as in paper
+ggplot() +
+  geom_line(aes(x = n, y = frequency, color = k, group = p)) +
+  facet_wrap(~p)
+  
 ```
 
