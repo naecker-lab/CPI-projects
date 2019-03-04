@@ -57,54 +57,6 @@ mean(probs, na.rm = T) # there will be some NAs because some sets of 4 flips wil
 
 The answer you get should be around 0.4, not 0.5 as we might expect.
 
-detecting streaks programatically is a little harder now
-
-**TODO**
-
-need a function to count streaks
-given a sequence of H and T, should return a sequence of same length
-where each entry counts the number of immediately preceding H's in a row
-eg if sequence is HTHHHH, return 0,1,0,1,2,3
-also add ability to calculate streaks of tails
-HTHHHH becomes 0, 0, 1, 0, 0, 0
-
-```{r}
-streaks <- function(flips, count = "H"){
-  ##print(flips[3])
-  
-  
-  output = rep(NA, length(flips))
-  output[1] = 0
-  output[2] = ifelse(flips[1] == count, 1, 0)
-  for(i in 3:length(flips)){
-      
-      if (flips[i-1] == count){
-        output[i] = 1 + output[i-1]
-      }
-      else{
-        output[i] = 0
-      }
-      
-          
-      #if (flips[i-1] == flips[i-2] & flips[i-1] == count){
-      #  output[i] = 1 + output[i-1] 
-      #}
-      #else{
-      #  output[i] = 0
-      #}
-    
-  }
-  return(output)
-  ##return output
-  ##flips_new <- ""
-  ##output <- rle(flips)
-  ##if flips == "H" &&
-  ## if n = n + 1 then count print count(n-1) +1
-    
-  }
-```
-
-
 ## Exercises
 
 ### Exercise 1
@@ -113,19 +65,16 @@ Veryify the following claim^[https://statmodeling.stat.columbia.edu/2015/07/09/h
 
 > With sequences of length 10, the average streakiness statistic (that is, for each person you compute the conditional probability proportion that he gets heads, conditional on him having just got heads on the previous flip, and then you average this across people), is .445. This is pretty far from .5, given that previous estimates of streak-shooting probability have been in the range of 2 percentage points.
 
-10 flips:
+To answer, this, you should only need to slightly modify the code block immediately above.  You can assume that heads stand in for makes, and tails stand in for misses.
 
-```{r}
-
-
+```{r exercise-1-answer}
 for (i in c(1:reps)) {
-  flips <- sample(c("T", "H"), 100, replace = T)
-  probs[i] <- mean(flipsMean[which(flipsMean == "H") + 1] == "H", na.rm = T) ##modify for 2,3
+  flips <- sample(c("T", "H"), 10, replace = T)
+  probs[i] <- mean(flips[which(flips == "H") + 1] == "H", na.rm = T) 
 }
 
 mean(probs, na.rm = T)
 ```
-
 
 
 ### Exercise 2
@@ -134,62 +83,49 @@ Verify the following claim[^https://statmodeling.stat.columbia.edu/2016/02/18/mi
 
 > Imagine Steph Curry shows up to the original hot hand study of Gilovich, Vallone, and Tversky (1985). Steph will shoot 100 shots. Suppose Steph Curry always has the same probability of success, for example, like a 50/50 fair coin. Notice we are assuming Steph Curry doesn’t get hot. Now calculate (1) Curry’s field goal percentage on shots taken when his previous 3 shots (or more) are makes and (2) Curry’s field goal percentage on shots taken when his previous 3 shots (or more) are misses. What do expect? If you are like most people, your intuition tells you that you should expect his field goal percentage to be the same in each case. This intuition is incorrect. In fact, you should expect Curry’s field goal percentage to be 46 percent after 3 (or more) makes, and 54 percent after 3 (or more) misses. Steph Curry is expected to shoot 8 percentage points better after 3 misses in a row than after three makes in row. 
 
+Again, you can use our work above, and assume that heads stand in for makes and tails stand in for misses. You'll also notice that we now need to look for streaks of length three, not length one as we have been doing so far.  To do this, you can take advantage of the `streaks` function that I have provided below.  
+
 ```{r}
-#Assume "H" = make
-flipsMean <- sample(c("T", "H"), 100, replace = T)
-steph <- function(flips, streaks, count = "H"){
+# function to calculate streaks
+# takes in a sequence of coin flips of any length
+# optional count argument says what counts as a successful trial
+# returns a vector of the same length
+# value of vector at any position is the streak count up to (but not including) that entry 
+streaks <- function(flips, count = "H"){
+  
+  # make outout vector and populate first 2 entries
+  output <- rep(NA, length(flips))
+  output[1] <- 0 # no streaks possible on first trial
+  output[2] <- ifelse(flips[1] == count, 1, 0)
+  
+  for (i in 3:length(flips)) {
       
-      output = rep(NA, length(flips))
-      #0 means not a streak of at least 3
-      output[1] = 0
-      output[2] = 0
-      output[3] = 0
-      #output[2] = ifelse(flips[1] == count, 1, 0)
-      
-      for(i in 4:length(flips)){
-      
-      if (flips[i-1] == count){
-        output[i] = 1 + output[i-1]
-      }
-      else{
-        output[i] = 0
-      }
-      }
-      
-      streakprob = rep(NA, length(output))
-      
-      
-      for (i in 3: length(output)){
-        if (output[i] >= 3){
-          output[i] = mean(probs, na.rm = T)
-        }
-        else{
-          #0 means not a streak of at least 3
-          output[i] = 0
-        }
-      }
-      return(output)
-      
-      
-     # probs[i] <- mean(flips[which(flips == "H") + 1] == "H", na.rm = T)
-
-      
-      #for(i in 3:length(output)){
-      #  if (output[i]>
-      
-      #if (flips[i-1] == flips[i-2] == flips[i-3] == count){
-      #  return mean(probs, na.rm = T)
-        #output[i] = 1 + output[i-1]
-      #}else{
-      #  output[i] = 0
-      #}
-
+    # if git a hit
+    if (flips[i - 1] == count) {
+      # add one to streak
+      output[i] <- output[i - 1] + 1
+    }
+    else{
+      # otherwise, reset streak
+      output[i] <- 0
+    }
+    
   }
+  return(output)
+}
 
+streaks(c("H", "H", "T", "T"))  # should give 0,1,2,0
+streaks(c("H", "H", "T", "T"), count = "T")  # should give 0,0,0,1
 ```
 
+Armed with this function, you should now be able to modify your answer to the previous exercise to generate the desired numbers in this exercise.  Note you need to calculate *two* quantities: the make percentage after a streak of three or more makes, and the make percentage after three or more misses.
 
+```{r exercise-2-answer}
+# field goal percentage after three or more makes in a row
 
+# field goal percentage after three or more misses in a row
+
+```
 
 ### Exercise 3
 
@@ -202,23 +138,6 @@ Use a simulation to replicate Figure 1 from the Econometrica paper[^https://pape
 #calculate % of shots they make after streak of that length
 #function
 #expand.grid(c(1:100), c("a","b"))
-
-
-streaks <- function(flips, count="H"){
-  counts=rep(NA, length(flips))
-  counts[1]=0
-  counts[2]=ifelse(flips[1]==count, 1,0)
-  for(i in 3:length(flips)){
-    if (flips[i-1]==count){  
-     counts[i]=1+counts[i-1]
-  }
-  else {
-    counts[i]=0}
-
-  }
-   return(counts)
-}
-
 
 graph<-function(k,n,p){
   reps<-1e4
