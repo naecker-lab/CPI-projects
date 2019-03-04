@@ -7,21 +7,41 @@ output: html_document
 
 ## Basic example
 
-From Gelman blog post
+Let's imagine flipping a coin four times.  We can model this using the `sample` function, which will take a random sample from the set of values we give it.  We can specify that we want 4 trials (flips in this case), and the sampling should be with replacement.  
 
-flip the coin 4 times
+```{r}
+sample(c("T", "H"), 4, replace = T)
+```
+
+You can run the code above several times to see that the sequence of flips is changing each time.  
+
+Next, we want to know what faction of flips immediatly following heads were also heads.  We can achieve this with the following code. First let's save the sequence of flips as an object called `flips`:
 
 ```{r}
 flips <- sample(c("T", "H"), 4, replace = T)
 ```
 
-what faction of flips immediatly following heads were also heads?
+Next, we want to know which flips were heads.  For this, we can use the `which` function:
+
+```{r}
+which(flips == "H")
+```
+
+Then we want to look at the flips that *follow* these.  We can simply add one to the indices, and check whether those flips are heads.
+
+```{r}
+flips[which(flips == "H") + 1] == "H"
+```
+
+We may get an NA if the last flip was heads, which is fine.  Finally, we want to average these true and false values.  When we do this, we calculate the fraction of the logicals that are true.
 
 ```{r}
 mean(flips[which(flips == "H") + 1] == "H", na.rm = T)
 ```
 
-lets repeat this a bunch of times
+Recall our primary question: What number do we expect to get out of this process?  We might be tempted to say the expected value is 0.5; after all, the coin flips are independent, so the probability of flipping a heads after a heads is 0.5.  
+
+Now, one run-through of this simiulation is not very conclusive, and its hard to tell from replicating a handful of times what the average output of this process is.  Lets repeat our simulation a bunch of times, and then calculate the average result.
 
 ```{r}
 reps <- 1e4
@@ -32,7 +52,6 @@ for (i in c(1:reps)) {
   probs[i] <- mean(flips[which(flips == "H") + 1] == "H", na.rm = T)
 }
 
-# calculate average probability
 mean(probs, na.rm = T) # there will be some NAs because some sets of 4 flips will have no heads
 ```
 
