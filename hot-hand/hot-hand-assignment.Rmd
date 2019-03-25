@@ -12,7 +12,7 @@ From Gelman blog post
 flip the coin 4 times
 
 ```{r}
-flips <- sample(c("T", "H"), 100, replace = T)
+flips <- sample(c("T", "H"), 4, replace = T)
 ```
 
 what faction of flips immediatly following heads were also heads?
@@ -97,14 +97,12 @@ Veryify the following claim^[https://statmodeling.stat.columbia.edu/2015/07/09/h
 10 flips:
 
 ```{r}
-
-
 for (i in c(1:reps)) {
-  flips <- sample(c("T", "H"), 100, replace = T)
-  probs[i] <- mean(flipsMean[which(flipsMean == "H") + 1] == "H", na.rm = T) ##modify for 2,3
+  flips <- sample(c("T", "H"), 10, replace = T)
+  probs[i] <- mean(flips[which(flips == "H") + 1] == "H", na.rm = T) 
 }
-
 mean(probs, na.rm = T)
+
 ```
 
 
@@ -115,66 +113,62 @@ Verify the following claim[^https://statmodeling.stat.columbia.edu/2016/02/18/mi
 
 > Imagine Steph Curry shows up to the original hot hand study of Gilovich, Vallone, and Tversky (1985). Steph will shoot 100 shots. Suppose Steph Curry always has the same probability of success, for example, like a 50/50 fair coin. Notice we are assuming Steph Curry doesn’t get hot. Now calculate (1) Curry’s field goal percentage on shots taken when his previous 3 shots (or more) are makes and (2) Curry’s field goal percentage on shots taken when his previous 3 shots (or more) are misses. What do expect? If you are like most people, your intuition tells you that you should expect his field goal percentage to be the same in each case. This intuition is incorrect. In fact, you should expect Curry’s field goal percentage to be 46 percent after 3 (or more) makes, and 54 percent after 3 (or more) misses. Steph Curry is expected to shoot 8 percentage points better after 3 misses in a row than after three makes in row. 
 
-
 ```{r}
-#Assume "H" = make
-flipsMean <- sample(c("T", "H"), 100, replace = T)
-steph <- function(flips, streaks, count = "H"){
-      
-      output = rep(NA, length(flips))
-      #0 means not a streak of at least 3
-      output[1] = 0
-      output[2] = 0
-      output[3] = 0
-      #output[2] = ifelse(flips[1] == count, 1, 0)
-      
-      for(i in 4:length(flips)){
-      
-      if (flips[i-1] == count){
-        output[i] = 1 + output[i-1]
-      }
-      else{
-        output[i] = 0
-      }
-      }
-      
-      streakprob = rep(NA, length(output))
-      
-      
-      for (i in 3: length(output)){
-        if (output[i] >= 3){
-          output[i] = mean(probs, na.rm = T)
-        }
-        else{
-          #0 means not a streak of at least 3
-          output[i] = 0
-        }
-      }
-      return(output)
-      
-      
-     # probs[i] <- mean(flips[which(flips == "H") + 1] == "H", na.rm = T)
-
-      
-      #for(i in 3:length(output)){
-      #  if (output[i]>
-      
-      #if (flips[i-1] == flips[i-2] == flips[i-3] == count){
-      #  return mean(probs, na.rm = T)
-        #output[i] = 1 + output[i-1]
-      #}else{
-      #  output[i] = 0
-      #}
-
-  }
+# field goal percentage after three or more makes in a row
+for (i in c(1:reps)) {
+  flips <- sample(c("T", "H"), 100, replace = T)
+  probs[i] <- mean(flips[which(streaks(flips) >= 3)] == "H", na.rm = T) 
+}
+mean(probs, na.rm = T)
+# field goal percentage after three or more misses in a row
+for (i in c(1:reps)) {
+  flips <- sample(c("T", "H"), 100, replace = T)
+  probs[i] <- mean(flips[which(streaks(flips, count = "T") >= 3)] == "H", na.rm = T) 
+}
+mean(probs, na.rm = T)
 
 ```
+
+
+
 
 ### Exercise 3
 
 Use a simulation to replicate Figure 1 from the Econometrica paper[^https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2627354].
 
 ```{r}
+##will have to change lines to adjust for sequence lengths and probabilities
+##takes in probability of getting hitting(p), streak length(k), and number of shots(n)
+#expand.grid
+#calculate % of shots they make after streak of that length
+#function
+#expand.grid(c(1:100), c("a","b"))
+#c("M", "H")
+calculate_frequency <-function(k,n,p){
+  reps<-1e4
+  probs <- rep(NA, reps)
+       for (i in c(1:reps)) {
+         steph <- sample(c("H","M"),size= n, replace=T, prob=c(p, 1-p))
+         probs[i] <- mean(steph[which(streaks(steph, count="H")>=k)] == "H")
+     }
+  
+      mean(probs, na.rm=T)
+}
+
+
+
+df<-expand.grid(k = c(1, 2, 3, 4), n = c(5:100), p = c(0.25, 0.5, 0.75))
+
+#add frequency column using calculate_frequency function
+
+df$frequency<-calculate_frequency(df$k,df$n,df$p)
+
+
+
+
+#ggplot() +
+#  geom_line(aes(x = n, y = frequency, color = k, group = p)) +
+#  facet_wrap(~p
 
 ```
 
