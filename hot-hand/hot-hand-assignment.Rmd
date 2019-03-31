@@ -156,7 +156,7 @@ calculate_frequency <-function(k,n,p){
 }
 
 
-
+#prob=c(p, 1-p)
 df<-expand.grid(k = c(1, 2, 3, 4), n = c(5:100), p = c(0.25, 0.5, 0.75))
 
 #add frequency column using calculate_frequency function
