@@ -1,0 +1,156 @@
+\documentclass[solutions]{problem-set}
+
+\usepackage{tikz}
+\usetikzlibrary{trees}
+\usepackage{pgfplots}
+
+\title{Risk Preferences Problem Set}
+\author{Prof. Jeffrey Naecker}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Analyze This}
+% code for Machina plots due to Jesse Cohen
+Consider the following two risky options:
+
+\begin{itemize}
+    \item Option A: 50\% chance of \$20, 50\% chance of \$50
+    \item Option B: 25\% chance of \$0, 75\% chance of \$50
+\end{itemize}
+
+\begin{enumerate}[label=(\alph*)]
+\item Draw an appropriate Machina triangle to analyze these two options, and carefully show where the two options are in the triangle.
+
+\begin{soln}
+The lower right corner of the triangle should correspond to the \$0 payoff, the lower left to \$20, and the upper left to \$50.  Option A is at $(0, 0.5)$ and option B is at $(0.25, 0.75)$. 
+
+\begin{tikzpicture}
+\begin{axis}[
+    axis lines = left,
+    xlabel = $p_1$,
+    ylabel = {$p_3$},
+]
+
+
+%Budget
+\addplot [
+    domain=0:1, 
+    samples=100, 
+    color=black,
+]
+{-x + 1};
+
+\filldraw[black] (250,750) circle (2pt) node[anchor=west] {B};
+\filldraw[black] (0,500) circle (2pt) node[anchor=west] {A};
+
+]
+{(1.72)*x};
+ 
+\end{axis}
+\end{tikzpicture}
+
+\end{soln}
+
+\item Consider an expected utility decision-maker whose value function is given by $u(x) = x^{\frac{1}{2}}$.  Calculate the utility of the two options, and indicate which one the consumer will choose.
+
+\begin{soln}
+We can calculate the utilities as follows:
+\begin{align*}
+EU_A &= 0.5 \sqrt{20} + 0.5 \sqrt{50} = 5.77 \\
+EU_B &= 0.25 \sqrt{0} + 0.75 \sqrt{50} = 5.30
+\end{align*}
+Thus the consumer prefers option A.
+\end{soln}
+
+\item Draw and give the slope for the indifference curves for the consumer in the previous part.  
+
+\begin{soln}
+We already know that the indifference curves are straight lines with positive slope.  The slope is given by
+\[
+\frac{\sqrt{20} - \sqrt{0}}{\sqrt{50} - \sqrt{20}} = 1.72.
+\]
+\begin{tikzpicture}
+\begin{axis}[
+    axis lines = left,
+    xlabel = $p_1$,
+    ylabel = {$p_3$},
+]
+
+
+%Budget
+\addplot [
+    domain=0:1, 
+    samples=100, 
+    color=black,
+]
+{-x + 1};
+
+\filldraw[black] (250,750) circle (2pt) node[anchor=west] {B};
+\filldraw[black] (0,500) circle (2pt) node[anchor=west] {A};
+
+%Indifference Curve
+\addplot [
+    domain=0:.5, 
+    samples=100, 
+    color=red,
+]
+{(1.72)*x + .2};
+
+%Indifference Curve
+\addplot [
+    domain=0:.4, 
+    samples=100, 
+    color=red,
+]
+{(1.72)*x+.4};
+ 
+%Indifference Curve
+\addplot [
+    domain=0:.58, 
+    samples=100, 
+    color=red,
+]
+{(1.72)*x};
+
+% A 
+\addplot [mark=*, color=black] table {
+0 .5 
+};
+
+% B
+\addplot [mark=*, color=black] table {
+.25 .75
+};
+ 
+\end{axis}
+\end{tikzpicture}
+\end{soln}
+
+	
+\end{enumerate}
+
+
+\section{Analyze That}
+
+Consider the following two risky options we saw  earlier:
+
+\begin{itemize}
+    \item Option A: 50\% chance of \$20, 50\% chance of \$50
+    \item Option B: 25\% chance of \$0, 75\% chance of \$50
+\end{itemize}
+
+Consider a prospect theory decision-maker which preference described by $\alpha = 0.5$, $\lambda = 1.5$, $c_r=10$, and $\gamma  = 0.3$.  Calculate their utility of the two options, and indicate which one they will choose.
+	
+\begin{soln}
+First, note that using the probability weighting function we can find that $\pi(0.25) = 0.42$, $\pi(0.5) = 0.5$, and $\pi(0.75) = 0.58$.  We can then calculate the utilities as follows:
+\begin{align*}
+PT_A &= 0.5 \sqrt{20-10} + 0.5 \sqrt{50-10} = 4.74 \\
+PT_B &= 0.42 \left [-2 \sqrt{|0-10|}\right ] + 0.58 \sqrt{50-10} =1.01 % should be 1.5 not 2?
+\end{align*}
+Thus this consumer prefers option A as well.
+\end{soln}	
+
+\end{document}

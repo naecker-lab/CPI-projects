@@ -1,0 +1,29 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{jeff-style}
+
+\RequirePackage{amsthm}
+\RequirePackage{amsmath}
+\RequirePackage{amssymb}
+
+%%% custom operators and symbols
+
+% nice fractions
+\usepackage{units}
+\newcommand{\nf}[2]{\nicefrac{#1}{#2}}
+
+% derivative shortcuts
+\newcommand{\derop}[2]{\frac{d{#1}}{d{#2}}}
+\newcommand{\deropp}[2]{\frac{d}{d{#2}}#1}
+\newcommand{\dderop}[2]{\frac{d^2{#1}}{d{#2^2}}}
+\newcommand{\dderopp}[2]{\frac{d^2}{d{#2^2}}#1}
+\newcommand{\pderop}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\pderopp}[2]{\frac{\partial}{\partial #2} #1 }
+\newcommand{\pdderop}[2]{\frac{\partial^2 #1}{\partial #2^2}}
+\newcommand{\pdderopp}[2]{\frac{\partial^2}{\partial #2^2} #1}
+
+% preference relations
+\newcommand{\weakpref}{\succeq}
+\newcommand{\strictpref}{\succ}
+
+% lagrangian
+\newcommand{\Lag}{\mathcal{L}}
