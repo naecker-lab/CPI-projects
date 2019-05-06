@@ -33,16 +33,17 @@ gambles <-
     corner2 = c(0,1)
   )
 
-ggplot(gambles, aes(x = p1, y = p3)) +
-  geom_point() + geom_line(aes(x = corner1, y = corner2)) +
-  geom_text(aes(label = label), hjust = 0, vjust = 0) + 
-  geom_hline(yintercept = 0) + geom_vline(xintercept = 0) + #stops intercepts from going past 1
-  xlim(0,1) + ylim(0,1) #sets scale for x any y axes
+base_plot <- ggplot(gambles, aes(x = p1, y = p3)) +
+  geom_point() +
+  geom_text(aes(label = label), hjust = 0, vjust = 0)+
+  xlim(0,1) +
+  ylim(0,1) +
+  geom_segment(aes(x=0,y=0,xend=0,yend=1)) +
+  geom_segment(aes(x=0,y=0,xend=1,yend=0)) +
+  geom_segment(aes(x=0,y=1,xend=1,yend=0)) +
+  theme_minimal()
 
-ggplot(gambles, aes(x = p1, y = p3)) +
-geom_point() +
-geom_text(aes(label = label), hjust = 0, vjust = 0)+
-xlim(0,1)+ylim(0,1)+geom_segment(aes(x=0,y=0,xend=0,yend=1))+geom_segment(aes(x=0,y=0,xend=1,yend=0))+geom_segment(aes(x=0,y=1,xend=1,yend=0))
+base_plot
 ```
 
 ### Part (b)
@@ -55,13 +56,15 @@ Consider an expected utility decision-maker whose value function is given by $u(
 ## ideally written as general-use function
 
  utility <- function(p1, p2, p3, x1, x2, x3){
-   u= p1*(x1^(1/2)) + p2*(x2^(1/2)) + p3*(x3^(1/2))
+   u = p1*(x1^(1/2)) + p2*(x2^(1/2)) + p3*(x3^(1/2))
    return(u)
  }
  
- x =utility(p1 = 0, p2 = 0.5, p3 = 0.5, x1 = 0, x2 = 20, x3 = 50)
+ x = utility(p1 = 0, p2 = 0.5, p3 = 0.5, x1 = 0, x2 = 20, x3 = 50)
  x
  y = utility(p1 = 0, p2 = 0.25, p3 = 0.75, x1 = 0, x2 = 0, x3 = 50)
+ 
+ utility(0, 0.25, 0.75, 0, 0, 50)
 y
 
 # We can calculate the utilities as follows:
@@ -86,16 +89,13 @@ We already know that the indifference curves are straight lines with positive sl
 
 ```{r}
 # option 1: prove straight lines, then plot
+base_plot + 
+  geom_abline(intercept=0,slope=1.72, color="red")+
+  geom_abline(intercept=.2,slope=1.72, color="red")+
+  geom_abline(intercept=.4,slope=1.72, color="red")
 
-# option 2: draw countour plot
+# option 2: draw countour plot witth geom_contour
 
-p<-ggplot(gambles, aes(x = p1, y = p3)) +
-geom_point() +
-geom_text(aes(label = label), hjust = 0, vjust = 0)+
-xlim(0,1)+ylim(0,1)+geom_segment(aes(x=0,y=0,xend=0,yend=1))+geom_segment(aes(x=0,y=0,xend=1,yend=0))+geom_segment(aes(x=0,y=1,xend=1,yend=0))
-
-
-p+ geom_abline(intercept=0,slope=1.72, color="red")+geom_abline(intercept=.2,slope=1.72, color="red")+geom_abline(intercept=.4,slope=1.72, color="red")
 
 ```
 
@@ -115,6 +115,12 @@ First, note that using the probability weighting function we can find that $\pi(
 
 ```{r}
 # similar to part b
+
+# define a weighting function
+
+# and then make prospect theory utility function that uses this weighting function
+
+
 #  PT_A &= 0.5 \sqrt{20-10} + 0.5 \sqrt{50-10} = 4.74 \\
 # PT_B &= 0.42 \left [-2 \sqrt{|0-10|}\right ] + 0.58 \sqrt{50-10} =1.01 % should be 1.5 not 2?
 
